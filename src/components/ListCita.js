@@ -21,6 +21,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import api from "./service/Service";
 import { useStateValue } from "../StateProvider";
+import { useHistory } from "react-router-dom";
 
 
 const tableIcons = {
@@ -78,34 +79,44 @@ const useStyles = makeStyles((theme) => ({
     const [{ basket, user }, dispatch] = useStateValue();
     const [citas, setCitas] = useState([]); //table citas
     const [idCliente, setIdCliente] = useState("");
+    const history = useHistory();
 
      useEffect(() => { 
         dataCliente();
-        api.get("/cita/idcliente/"+idCliente)
-              .then(res => {               
+        if(user){
+          dataCliente();
+          }else{
+          history.push("/")
+          }
+      }, [])
+      
+      const listarCitas=(e) =>{
+        api.get("/cita/idcliente/"+e)
+              .then(res => {
+                console.log(res.data);               
                   setCitas(res.data)
                })
                .catch(error=>{
                    console.log("Error")
                })
-      }, [])
-      
+      }
 
 
       const dataCliente=(e) =>{
-        api.get("/cliente/correo/"+user.email)
-             .then(res => {               
+        api.get("/cliente/correo/"+user?.email)
+             .then(res => { 
+                console.log("aca debe salir el ID");             
                  console.log(res);
                  setIdCliente(res.data.id);
                  console.log(res.data.id);
+                 listarCitas(res.data.id);
               })
               .catch(error=>{
                   console.log("Error")
               })
       }
+      
 
-      
-      
 
       return (
         <div className="ListCita">

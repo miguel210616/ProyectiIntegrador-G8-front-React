@@ -21,6 +21,7 @@ function App() {
 
   useEffect(() => {
     auth.onAuthStateChanged((authUser) => {
+      console.log("Busqueda implacable-----");
       console.log(authUser);
       if (authUser) {
         dispatch({
